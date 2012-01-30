@@ -22,13 +22,13 @@ public class Motion
 		setFriction(1, 1);
 	}
 	
-	public boolean hitUpperBoundaryX(int xOffset)
+	public boolean hitLowerBoundaryX(int xOffset)
 	{
 		if (boundary == null) return false;
 		return pos.x - xOffset < boundary.x;
 	}
 	
-	public boolean hitLowerBoundaryX(int xOffset)
+	public boolean hitUpperBoundaryX(int xOffset)
 	{
 		if (boundary == null) return false;
 		return pos.x + xOffset > boundary.x + boundary.width;

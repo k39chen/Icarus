@@ -5,6 +5,8 @@ import global.Global;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+import resources.Graphic;
+
 public class ActiveObject 
 {	
 	// motion-related physics
@@ -15,6 +17,8 @@ public class ActiveObject
 	public int height;
 	
 	public boolean alive;
+	
+	public Graphic img;
 	
 	public ActiveObject()
 	{

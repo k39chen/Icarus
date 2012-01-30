@@ -5,7 +5,6 @@ import global.Global;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import resources.Graphic;
 import resources.GraphicsCache;
 
 import common.ActiveObject;
@@ -14,8 +13,6 @@ public class Glider extends ActiveObject
 {
 	public double distance;
 	public double speed;
-	
-	Graphic img;
 	
 	public Glider()
 	{

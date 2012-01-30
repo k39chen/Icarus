@@ -5,7 +5,11 @@ import global.Global;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
+
+import javax.swing.Timer;
 
 public class GliderGame 
 {
@@ -20,6 +24,8 @@ public class GliderGame
 	public Rectangle sky;
 	public Rectangle sea;
 	
+	public Timer obstacleTimer;
+	
 	public int border_offset;
 	
 	public GliderGame()
@@ -27,12 +33,24 @@ public class GliderGame
 		hud = new Hud(this);
 		
 		parallaxes = new Vector<Parallax>();
-		parallaxes.add(new Parallax("assets/background.png", -1, 0));
-		parallaxes.add(new Parallax("assets/midground.png", -3, 0));
+		parallaxes.add(new Parallax("assets/background.png", -2, 0));
+		parallaxes.add(new Parallax("assets/midground.png", -4, 0));
 		parallaxes.add(new Parallax("assets/foreground.png", -6, 0));
 		
 		obstacles = new Vector<Obstacle>();
 		obstacles.add(new Obstacle());
+		
+		ActionListener actionlistener = new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				obstacles.add(new Obstacle());
+			}
+		};
+		
+		obstacleTimer = new Timer(1000, actionlistener);
+		obstacleTimer.start();
 		
 		glider = new Glider();
 		
@@ -43,33 +61,8 @@ public class GliderGame
 	}
 	
 	public void update()
-	{
-		if (glider.alive)
-		{
-			glider.update();
-			hud.update();
-			
-			for (Parallax parallax : parallaxes)
-			{
-				parallax.update();
-			}
-			
-			for (Obstacle obstacle : obstacles)
-			{
-				obstacle.update();
-				
-				if (glider.collision.hit(obstacle))
-				{
-					glider.alive = false;
-				}
-			}
-			
-			if (glider.collision.hit(sea) || glider.collision.hit(sky))
-			{
-				glider.alive = false;
-			}
-		}
-		else
+	{	
+		if (!glider.alive)
 		{
 			for (Parallax parallax : parallaxes)
 			{
@@ -80,6 +73,38 @@ public class GliderGame
 			{
 				obstacle.stop();
 			}
+		}
+		
+		glider.update();
+		hud.update();
+		
+		for (Parallax parallax : parallaxes)
+		{
+			parallax.update();
+		}
+		
+		for (int k=0; k<obstacles.size(); k++)
+		{
+			Obstacle obstacle = obstacles.get(k);
+			
+			if (!obstacle.alive)
+			{
+				obstacles.remove(k);
+				k--;
+				continue;
+			}
+			
+			obstacle.update();
+			
+			if (glider.collision.hit(obstacle))
+			{
+				glider.alive = false;
+			}
+		}
+		
+		if (glider.collision.hit(sea) || glider.collision.hit(sky))
+		{
+			glider.alive = false;
 		}
 	}
 	

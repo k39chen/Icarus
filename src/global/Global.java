@@ -9,7 +9,7 @@ public class Global
 	public static final int SCREEN_HEIGHT 		= 640;
 	public static final int FRAMES_PER_SECOND 	= 60;
 	
-	public static boolean SHOW_BOUNDING_BOXES	= true;
+	public static boolean SHOW_BOUNDING_BOXES	= false;
 	
 	public static URL CODE_BASE;
 	

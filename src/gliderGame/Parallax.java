@@ -3,25 +3,19 @@ package gliderGame;
 import global.Global;
 
 import java.awt.Graphics;
-
-import resources.Graphic;
 import resources.GraphicsCache;
 
 import common.ActiveObject;
 
 public class Parallax extends ActiveObject
 {	
-	public Graphic img;
-	
-	public String url;
 	public int speedX;
 	public int speedY;
 	
-	public Parallax(String img_url, int speed_x, int speed_y)
+	public Parallax(String url, int speed_x, int speed_y)
 	{
 		super();
 		
-		url = img_url;
 		speedX = speed_x;
 		speedY = speed_y;
 		

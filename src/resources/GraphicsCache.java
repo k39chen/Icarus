@@ -25,6 +25,11 @@ public class GraphicsCache
 	
 	public Graphic loadGraphic(String url)
 	{
+		if (gs_stack.containsKey(url))
+		{
+			return getGraphic(url);
+		}
+		
 		Graphic loadedGraphic = new Graphic(url);
 		
 		gs_stack.put(url, loadedGraphic);
