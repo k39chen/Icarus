@@ -65,31 +65,34 @@ public class Collision
 		{
 			if (point != null)
 			{
-				Point realPoint = new Point(
+				Point sourcePoint = new Point(
 						point.x + object.motion.pos.x, 
 						point.y + object.motion.pos.y);
 				
-				return 	(realPoint.x == target.x) && 
-						(realPoint.y == target.y);
+				return 	(sourcePoint.x == target.x) && 
+						(sourcePoint.y == target.y);
 			}
 			if (rectangle != null)
 			{
-				Rectangle realRectangle = new Rectangle(
+				Rectangle sourceRectangle = new Rectangle(
 						rectangle.x + object.motion.pos.x, 
 						rectangle.y + object.motion.pos.y, 
 						rectangle.width, rectangle.height);
 				
-				return 	(target.x >= realRectangle.x) &&
-						(target.x <= realRectangle.x + realRectangle.width) &&
-						(target.y >= realRectangle.y) &&
-						(target.y <= realRectangle.y + realRectangle.height);
+				return 	(target.x >= sourceRectangle.x) &&
+						(target.x <= sourceRectangle.x + sourceRectangle.width) &&
+						(target.y >= sourceRectangle.y) &&
+						(target.y <= sourceRectangle.y + sourceRectangle.height);
 			}
 			if (circle != null)
 			{
-				Ellipse2D.Double realCircle = new Ellipse2D.Double(
+				Ellipse2D.Double sourceCircle = new Ellipse2D.Double(
 						circle.x + object.motion.pos.x,
 						circle.y + object.motion.pos.y,
 						circle.width, circle.height);
+
+				// TODO
+				return sourceCircle != null;
 			}
 		}
 		
@@ -97,35 +100,37 @@ public class Collision
 	}
 	
 	public boolean hit(Rectangle target)
-	{
+	{	
 		if (collisionShapeSet)
 		{
 			if (point != null)
 			{
-				Point realPoint = new Point(
+				Point sourcePoint = new Point(
 						point.x + object.motion.pos.x, 
 						point.y + object.motion.pos.y);
 				
-				return 	(realPoint.x >= target.x) &&
-						(realPoint.x <= target.x + target.width) &&
-						(realPoint.y >= target.y) &&
-						(realPoint.y <= target.y + target.height);
+				return 	(sourcePoint.x >= target.x) &&
+						(sourcePoint.x <= target.x + target.width) &&
+						(sourcePoint.y >= target.y) &&
+						(sourcePoint.y <= target.y + target.height);
 			}
 			if (rectangle != null)
-			{
-				Rectangle realRectangle = new Rectangle(
+			{	
+				Rectangle sourceRectangle = new Rectangle(
 						rectangle.x + object.motion.pos.x, 
 						rectangle.y + object.motion.pos.y, 
 						rectangle.width, rectangle.height);
 				
-				return realRectangle.intersects(target);
+				return sourceRectangle.intersects(target);
 			}
 			if (circle != null)
 			{
-				Ellipse2D.Double realCircle = new Ellipse2D.Double(
+				Ellipse2D.Double sourceCircle = new Ellipse2D.Double(
 						circle.x + object.motion.pos.x,
 						circle.y + object.motion.pos.y,
 						circle.width, circle.height);
+				
+				return sourceCircle != null;
 			}
 		}
 			
@@ -138,23 +143,72 @@ public class Collision
 		{
 			if (point != null)
 			{
-				Point realPoint = new Point(
+				Point sourcePoint = new Point(
 						point.x + object.motion.pos.x, 
 						point.y + object.motion.pos.y);
+				
+				// TODO
+				return sourcePoint != null;
 			}
 			if (rectangle != null)
 			{
-				Rectangle realRectangle = new Rectangle(
+				Rectangle sourceRectangle = new Rectangle(
 						rectangle.x + object.motion.pos.x, 
 						rectangle.y + object.motion.pos.y, 
 						rectangle.width, rectangle.height);
+				
+				// TODO
+				return sourceRectangle != null;
 			}
 			if (circle != null)
 			{
-				Ellipse2D.Double realCircle = new Ellipse2D.Double(
+				Ellipse2D.Double sourceCircle = new Ellipse2D.Double(
 						circle.x + object.motion.pos.x,
 						circle.y + object.motion.pos.y,
 						circle.width, circle.height);
+				
+				// TODO
+				return sourceCircle != null;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean hit(ActiveObject targetObject)
+	{
+		if (collisionShapeSet)
+		{
+			if (targetObject.collision.point != null)
+			{
+				Point targetPoint = new Point(
+						targetObject.collision.point.x + targetObject.motion.pos.x, 
+						targetObject.collision.point.y + targetObject.motion.pos.y);
+				
+				return hit(targetPoint);
+			}
+			else if (targetObject.collision.rectangle != null)
+			{
+				Rectangle targetRectangle = new Rectangle(
+						targetObject.collision.rectangle.x + targetObject.motion.pos.x, 
+						targetObject.collision.rectangle.y + targetObject.motion.pos.y, 
+						targetObject.collision.rectangle.width, 
+						targetObject.collision.rectangle.height);
+				
+				return hit(targetRectangle);
+			}
+			else if (targetObject.collision.circle != null)
+			{
+				Ellipse2D.Double targetCircle = new Ellipse2D.Double(
+						targetObject.collision.circle.x + targetObject.motion.pos.x,
+						targetObject.collision.circle.y + targetObject.motion.pos.y,
+						targetObject.collision.circle.width, 
+						targetObject.collision.circle.height);
+				
+				return hit(targetCircle);
+			}
+			else
+			{
 			}
 		}
 		

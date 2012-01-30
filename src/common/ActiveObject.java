@@ -11,8 +11,15 @@ public class ActiveObject
 	public Motion motion;
 	public Collision collision;
 	
+	public int width;
+	public int height;
+	
+	public boolean alive;
+	
 	public ActiveObject()
 	{
+		alive = true;
+		
 		motion = new Motion();
 		
 		motion.setPosition(0, 0);

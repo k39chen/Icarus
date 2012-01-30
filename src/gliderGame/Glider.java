@@ -2,7 +2,6 @@ package gliderGame;
 
 import global.Global;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -16,11 +15,6 @@ public class Glider extends ActiveObject
 	public double distance;
 	public double speed;
 	
-	public int width;
-	public int height;
-	
-	boolean alive;
-	
 	Graphic img;
 	
 	public Glider()
@@ -29,27 +23,20 @@ public class Glider extends ActiveObject
 		
 		distance = 0;
 		speed = 1.01;
-	
-		alive = true;
 		
 		img = GraphicsCache.GetInstance().loadGraphic("assets/glider.png");
 		
-		width = Global.ScaleValue(img.getWidth());
-		height = Global.ScaleValue(img.getHeight());
+		width = img.getWidth();
+		height = img.getHeight();
 		
-		motion.setPosition(
-				(Global.ScaleValue(Global.SCREEN_WIDTH) - width)/2, 
-				(Global.ScaleValue(Global.SCREEN_HEIGHT) - height)/2);
-		
+		motion.setPosition((Global.ScreenWidth() - width)/2, (Global.ScreenHeight() - height)/2);
 		motion.setVelocity(0, Global.ScaleValue(4));
 		motion.setAcceleration(0, 0);
 		motion.setFriction(1, 1);
 	
-		motion.setBoundary(new Rectangle(0, 0, 
-				Global.ScaleValue(Global.SCREEN_WIDTH), 
-				Global.ScaleValue(Global.SCREEN_HEIGHT)));
+		motion.setBoundary(new Rectangle(0, 0, Global.ScreenWidth(), Global.ScreenHeight()));
 		
-		collision.SetRectangle(new Rectangle((int)(-width / (Global.SCALE * 2)), (int)(-height / (Global.SCALE * 2)), width, height));
+		collision.SetRectangle(new Rectangle(0, 0, width, height));
 	}
 	
 	public void update()
@@ -57,8 +44,7 @@ public class Glider extends ActiveObject
 		if (alive)
 		{	
 			distance += speed;
-			
-			motion.move();
+			super.update();
 		}
 		else
 		{
@@ -78,7 +64,7 @@ public class Glider extends ActiveObject
 	
 	public void paint(Graphics g)
 	{	
-		img.paint(g, motion.pos.x - img.getWidth()/2, motion.pos.y - img.getHeight()/2);
+		img.paint(g, motion.pos.x, motion.pos.y);
 		
 		super.paint(g);
 	}

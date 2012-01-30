@@ -12,6 +12,11 @@ import java.awt.event.MouseListener;
 
 public class Game extends Applet implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {
+	/**
+	 * Needed to suppress annoying serial version uid warning.
+	 */
+	private static final long serialVersionUID = 2669184299690792298L;
+	
 	// double-buffering
 	private Image dbImage;
 	private Graphics dbGraphics;

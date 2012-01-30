@@ -13,7 +13,17 @@ public class Global
 	
 	public static URL CODE_BASE;
 	
-	public static final double SCALE			= 0.5;
+	public static final double SCALE			= 1.0;
+	
+	public static final int ScreenWidth()
+	{
+		return ScaleValue(SCREEN_WIDTH);
+	}
+	
+	public static final int ScreenHeight()
+	{
+		return ScaleValue(SCREEN_HEIGHT);
+	}
 	
 	public static final int ScaleValue(int x)
 	{

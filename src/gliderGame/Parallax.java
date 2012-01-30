@@ -2,7 +2,6 @@ package gliderGame;
 
 import global.Global;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 import resources.Graphic;
@@ -11,10 +10,7 @@ import resources.GraphicsCache;
 import common.ActiveObject;
 
 public class Parallax extends ActiveObject
-{
-	public int width;
-	public int height;
-	
+{	
 	public Graphic img;
 	
 	public String url;
@@ -31,8 +27,8 @@ public class Parallax extends ActiveObject
 		
 		img = GraphicsCache.GetInstance().loadGraphic(url);
 		
-		width = Global.ScaleValue(img.getWidth());
-		height = Global.ScaleValue(img.getHeight());
+		width = img.getWidth();
+		height = img.getHeight();
 		
 		motion.setPosition(0, Global.ScaleValue(Global.SCREEN_HEIGHT) - height);
 		motion.setVelocity(Global.ScaleValue(speedX), Global.ScaleValue(speedY));

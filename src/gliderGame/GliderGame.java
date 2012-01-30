@@ -2,7 +2,6 @@ package gliderGame;
 
 import global.Global;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -13,6 +12,8 @@ public class GliderGame
 	public Hud hud;
 	
 	public Vector<Parallax> parallaxes;
+	
+	public Vector<Obstacle> obstacles;
 	
 	public Glider glider;
 	
@@ -30,6 +31,9 @@ public class GliderGame
 		parallaxes.add(new Parallax("assets/midground.png", -3, 0));
 		parallaxes.add(new Parallax("assets/foreground.png", -6, 0));
 		
+		obstacles = new Vector<Obstacle>();
+		obstacles.add(new Obstacle());
+		
 		glider = new Glider();
 		
 		border_offset = Global.ScaleValue(32);
@@ -42,14 +46,23 @@ public class GliderGame
 	{
 		if (glider.alive)
 		{
+			glider.update();
 			hud.update();
 			
-			for (int i=0; i<parallaxes.size(); i++)
+			for (Parallax parallax : parallaxes)
 			{
-				parallaxes.get(i).update();
+				parallax.update();
 			}
 			
-			glider.update();
+			for (Obstacle obstacle : obstacles)
+			{
+				obstacle.update();
+				
+				if (glider.collision.hit(obstacle))
+				{
+					glider.alive = false;
+				}
+			}
 			
 			if (glider.collision.hit(sea) || glider.collision.hit(sky))
 			{
@@ -58,19 +71,30 @@ public class GliderGame
 		}
 		else
 		{
-			for (int i=0; i<parallaxes.size(); i++)
+			for (Parallax parallax : parallaxes)
 			{
-				parallaxes.get(i).stop();
+				parallax.stop();
+			}
+			
+			for (Obstacle obstacle : obstacles)
+			{
+				obstacle.stop();
 			}
 		}
 	}
 	
 	public void paint(Graphics g)
 	{
-		for (int i=0; i<parallaxes.size(); i++)
+		for (Parallax parallax : parallaxes)
 		{
-			parallaxes.get(i).paint(g);
+			parallax.paint(g);
 		}
+		
+		for (Obstacle obstacle : obstacles)
+		{
+			obstacle.paint(g);
+		} 
+		
 		/*
 		g.setColor(Color.blue);
 		g.fillRect(sky.x, sky.y, sky.width, sky.height);

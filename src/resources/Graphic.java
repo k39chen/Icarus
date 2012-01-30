@@ -3,7 +3,6 @@ package resources;
 import global.Global;
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -34,22 +33,22 @@ public class Graphic extends Resource
 	
 	public int getHeight()
 	{
-		return ((BufferedImage)(r_data)).getHeight();
+		return (int)(((BufferedImage)(r_data)).getHeight() * Global.SCALE);
 	}
 	
 	public int getWidth()
 	{
-		return ((BufferedImage)(r_data)).getWidth();
+		return (int)(((BufferedImage)(r_data)).getWidth() * Global.SCALE);
 	}
 	
 	public void paint(Graphics g, int x, int y)
 	{
-		g.drawImage((BufferedImage)r_data, x, y, (int)(getWidth() * Global.SCALE), (int)(getHeight() * Global.SCALE), null);
+		g.drawImage((BufferedImage)r_data, x, y, getWidth(), getHeight(), null);
 	}
 	
 	public void paint(Graphics g, int x, int y, int width, int height)
 	{
-		g.drawImage((BufferedImage)r_data, x, y, (int)(width * Global.SCALE), (int)(height * Global.SCALE), null);
+		g.drawImage((BufferedImage)r_data, x, y, getWidth(), getHeight(), null);
 		
 		
 		paint(g, x, y, width * Global.SCALE, height * Global.SCALE);
@@ -57,7 +56,7 @@ public class Graphic extends Resource
 	
 	public void paint(Graphics g, int x, int y, double scaleX, double scaleY)
 	{
-		g.drawImage((BufferedImage)r_data, x, y, (int)(getWidth() * scaleX * Global.SCALE), (int)(getHeight() * scaleY * Global.SCALE), null);
+		g.drawImage((BufferedImage)r_data, x, y, (int)(getWidth() * scaleX), (int)(getHeight() * scaleY), null);
 	}
 	
 	public BufferedImage getData() 
