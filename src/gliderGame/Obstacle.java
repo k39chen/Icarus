@@ -1,44 +1,56 @@
 package gliderGame;
 
-import global.Global;
-
 import java.awt.Graphics;
-import java.awt.Rectangle;
-
-import resources.GraphicsCache;
 import common.ActiveObject;
+import common.Animation;
 
 public class Obstacle extends ActiveObject
 {
 	public int border_offset;
 	
+	public static final int OBSTACLE_NORMAL = 0;
+	public static final int OBSTACLE_CHARGER = 1;
+	public static final int OBSTACLE_PATROL = 2;
+	public static final int OBSTACLE_BOOMER = 3;
+	public static final int NUM_OBSTACLES 	= 4;
+	
+	public static Obstacle GenerateObstacle()
+	{
+		//switch ((int)(Math.random() * NUM_OBSTACLES))
+		switch(2)
+		{
+			case OBSTACLE_NORMAL:	return new Obstacle_Normal();
+			case OBSTACLE_CHARGER:	return new Obstacle_Charger();
+			case OBSTACLE_PATROL:	return new Obstacle_Patrol();
+			case OBSTACLE_BOOMER:	return new Obstacle_Boomer();
+			default:				return null;
+		}
+	}
+
+	protected Animation animation;
+	public int ObstacleType;
+	public double scaleX;
+	public double scaleY;
+	
 	public Obstacle()
 	{
 		super();
 		
-		img = GraphicsCache.GetInstance().loadGraphic("assets/rock.png");
-		
-		width = img.getWidth();
-		height = img.getHeight();
-		
-		border_offset = Global.ScaleValue(32);
-	
-		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - border_offset - height)));
-		motion.setVelocity(Global.ScaleValue(-6), 0);
-		motion.setAcceleration(0, 0);
-		motion.setFriction(1, 1);
-		
-		motion.setBoundary(new Rectangle(-width, 0, Global.ScreenWidth(), Global.ScreenHeight()));
-		
-		collision.SetRectangle(new Rectangle(0, 0, width, height));
-		
+		scaleX = 1.0;
+		scaleY = 1.0;
 	}
 	
-	public void update()
+	public void update(Glider glider)
 	{	
+		if (glider.collision.hit(this))
+		{
+			glider.alive = false;
+			return;
+		}
+		
 		if (motion.hitLowerBoundaryX(0))
 		{
-			alive = false;
+			kill();
 			stop();
 		}
 		
@@ -52,8 +64,7 @@ public class Obstacle extends ActiveObject
 	
 	public void paint(Graphics g)
 	{
-		img.paint(g, motion.pos.x, motion.pos.y);
-		
+		animation.getFrame().paint(g, motion.pos.x, motion.pos.y, scaleX, scaleY);
 		super.paint(g);
 	}
 }

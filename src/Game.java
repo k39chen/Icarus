@@ -10,13 +10,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseListener;
 
-public class Game extends Applet implements Runnable, KeyListener, MouseListener, MouseMotionListener
-{
-	/**
-	 * Needed to suppress annoying serial version uid warning.
-	 */
-	private static final long serialVersionUID = 2669184299690792298L;
-	
+public class Game 
+	extends Applet 
+	implements Runnable, KeyListener, MouseListener, MouseMotionListener
+{	
 	// double-buffering
 	private Image dbImage;
 	private Graphics dbGraphics;
@@ -33,7 +30,7 @@ public class Game extends Applet implements Runnable, KeyListener, MouseListener
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
-		Global.CODE_BASE = getCodeBase();
+		Global.CODE_BASE = getDocumentBase();
 	}
 	
 	@Override
@@ -128,6 +125,21 @@ public class Game extends Applet implements Runnable, KeyListener, MouseListener
 	@Override
 	public void keyReleased(KeyEvent e) 
 	{
+		switch (e.getKeyCode())
+		{
+		case KeyEvent.VK_LEFT:
+			break;
+		case KeyEvent.VK_RIGHT:
+			break;
+		case KeyEvent.VK_UP:
+			break;
+		case KeyEvent.VK_DOWN:
+			break;
+		case KeyEvent.VK_SPACE:
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override

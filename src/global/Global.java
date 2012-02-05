@@ -9,7 +9,7 @@ public class Global
 	public static final int SCREEN_HEIGHT 		= 640;
 	public static final int FRAMES_PER_SECOND 	= 60;
 	
-	public static boolean SHOW_BOUNDING_BOXES	= false;
+	public static boolean SHOW_BOUNDING_BOXES	= true;
 	
 	public static URL CODE_BASE;
 	
@@ -28,6 +28,11 @@ public class Global
 	public static final int ScaleValue(int x)
 	{
 		return DoubleToInt(SCALE * x);
+	}
+	
+	public static final double ScaleValueD(double x)
+	{
+		return SCALE * x;
 	}
 	
 	public static final int DoubleToInt(double x)

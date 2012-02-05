@@ -10,7 +10,7 @@ public class Collision
 {	
 	public Point point;
 	public Rectangle rectangle;
-	public Ellipse2D.Double circle;
+	public Circle circle;
 	
 	private boolean collisionShapeSet;
 	
@@ -41,7 +41,7 @@ public class Collision
 		}
 	}
 	
-	public void SetCircle(Ellipse2D.Double circ)
+	public void SetCircle(Circle circ)
 	{
 		if (!collisionShapeSet)
 		{
@@ -86,13 +86,12 @@ public class Collision
 			}
 			if (circle != null)
 			{
-				Ellipse2D.Double sourceCircle = new Ellipse2D.Double(
-						circle.x + object.motion.pos.x,
-						circle.y + object.motion.pos.y,
-						circle.width, circle.height);
+				Circle sourceCircle = new Circle(
+						(int)(circle.x + object.motion.pos.x),
+						(int)(circle.y + object.motion.pos.y),
+						(int)(circle.width/2));
 
-				// TODO
-				return sourceCircle != null;
+				return sourceCircle.intersects(new Rectangle(target.x, target.y, 1, 1));
 			}
 		}
 		
@@ -126,18 +125,18 @@ public class Collision
 			if (circle != null)
 			{
 				Ellipse2D.Double sourceCircle = new Ellipse2D.Double(
-						circle.x + object.motion.pos.x,
-						circle.y + object.motion.pos.y,
-						circle.width, circle.height);
+						(int)(circle.x + object.motion.pos.x),
+						(int)(circle.y + object.motion.pos.y),
+						(int)(circle.radius * 2), (int)(circle.radius * 2));
 				
-				return sourceCircle != null;
+				return sourceCircle.intersects(target);
 			}
 		}
 			
 		return false;
 	}
 	
-	public boolean hit(Ellipse2D.Double target)
+	public boolean hit(Circle target)
 	{
 		if (collisionShapeSet)
 		{
@@ -147,8 +146,8 @@ public class Collision
 						point.x + object.motion.pos.x, 
 						point.y + object.motion.pos.y);
 				
-				// TODO
-				return sourcePoint != null;
+				int distance = (int)sourcePoint.distance(target.x, target.y);
+				return distance <= target.radius;
 			}
 			if (rectangle != null)
 			{
@@ -157,18 +156,19 @@ public class Collision
 						rectangle.y + object.motion.pos.y, 
 						rectangle.width, rectangle.height);
 				
-				// TODO
-				return sourceRectangle != null;
+				return target.intersects(sourceRectangle);
 			}
 			if (circle != null)
 			{
-				Ellipse2D.Double sourceCircle = new Ellipse2D.Double(
-						circle.x + object.motion.pos.x,
-						circle.y + object.motion.pos.y,
-						circle.width, circle.height);
+				Circle sourceCircle = new Circle(
+						(int)(circle.x + object.motion.pos.x),
+						(int)(circle.y + object.motion.pos.y),
+						(int)(circle.radius));
+
+				Point point = new Point((int)(sourceCircle.x + sourceCircle.radius), (int)(sourceCircle.y + sourceCircle.radius));
+				int distance = (int)point.distance(target.x + target.radius, target.y + target.radius);
 				
-				// TODO
-				return sourceCircle != null;
+				return (distance <= (sourceCircle.radius + target.radius));
 			}
 		}
 		
@@ -199,11 +199,10 @@ public class Collision
 			}
 			else if (targetObject.collision.circle != null)
 			{
-				Ellipse2D.Double targetCircle = new Ellipse2D.Double(
-						targetObject.collision.circle.x + targetObject.motion.pos.x,
-						targetObject.collision.circle.y + targetObject.motion.pos.y,
-						targetObject.collision.circle.width, 
-						targetObject.collision.circle.height);
+				Circle targetCircle = new Circle(
+						(int)(targetObject.collision.circle.x + targetObject.motion.pos.x),
+						(int)(targetObject.collision.circle.y + targetObject.motion.pos.y),
+						(int)(targetObject.collision.circle.width/2));
 				
 				return hit(targetCircle);
 			}
@@ -219,7 +218,7 @@ public class Collision
 	{
 		if (collisionShapeSet)
 		{
-			g.setColor(Color.blue);
+			g.setColor(Color.black);
 			
 			if (point != null)
 			{
@@ -231,7 +230,7 @@ public class Collision
 			}
 			if (circle != null)
 			{
-				g.drawOval(object.motion.pos.x + (int)circle.x, object.motion.pos.y + (int)circle.y, (int)circle.width, (int)circle.height);
+				g.drawOval(object.motion.pos.x + circle.x, object.motion.pos.y + circle.y, circle.radius * 2, circle.radius * 2);
 			}
 		}
 	}

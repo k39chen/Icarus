@@ -4,15 +4,19 @@ import global.Global;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
-
-import resources.GraphicsCache;
+import java.util.Vector;
 
 import common.ActiveObject;
+import common.Animation;
+import common.Circle;
+import common.Spritesheet;
 
 public class Glider extends ActiveObject
 {
 	public double distance;
 	public double speed;
+	
+	private Animation animation;
 	
 	public Glider()
 	{
@@ -21,19 +25,23 @@ public class Glider extends ActiveObject
 		distance = 0;
 		speed = 1.01;
 		
-		img = GraphicsCache.GetInstance().loadGraphic("assets/glider.png");
+		Vector<Integer> vec = new Vector<Integer>();
+		vec.add(0);vec.add(1);vec.add(2);
 		
-		width = img.getWidth();
-		height = img.getHeight();
+		animation = new Animation(new Spritesheet("assets/quicksprite.png", 3, 1), vec, 150);
+		animation.play();
 		
-		motion.setPosition((Global.ScreenWidth() - width)/2, (Global.ScreenHeight() - height)/2);
-		motion.setVelocity(0, Global.ScaleValue(4));
+		width = animation.spritesheet.spritesheet.get(0).getWidth();
+		height = animation.spritesheet.spritesheet.get(0).getHeight();
+		
+		motion.setPosition((Global.ScreenWidth() - width)/2 - Global.ScaleValue(300), (Global.ScreenHeight() - height)/2);
+		motion.setVelocity(0, Global.ScaleValueD(5));
 		motion.setAcceleration(0, 0);
 		motion.setFriction(1, 1);
 	
 		motion.setBoundary(new Rectangle(0, 0, Global.ScreenWidth(), Global.ScreenHeight()));
 		
-		collision.SetRectangle(new Rectangle(0, 0, width, height));
+		collision.SetCircle(new Circle(0, 0, width/2));
 	}
 	
 	public void update()
@@ -46,6 +54,7 @@ public class Glider extends ActiveObject
 		else
 		{
 			motion.stop();
+			animation.stop();
 		}
 	}
 	
@@ -61,7 +70,7 @@ public class Glider extends ActiveObject
 	
 	public void paint(Graphics g)
 	{	
-		img.paint(g, motion.pos.x, motion.pos.y);
+		animation.getFrame().paint(g, motion.pos.x, motion.pos.y);
 		
 		super.paint(g);
 	}

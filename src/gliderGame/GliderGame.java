@@ -2,6 +2,7 @@ package gliderGame;
 
 import global.Global;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -21,16 +22,19 @@ public class GliderGame
 	
 	public Glider glider;
 	
-	public Rectangle sky;
-	public Rectangle sea;
+	public Rectangle floor;
+	public Rectangle ceiling;
 	
 	public Timer obstacleTimer;
 	
 	public int border_offset;
 	
 	public GliderGame()
-	{
+	{	
 		hud = new Hud(this);
+		
+		Vector<Integer> vec = new Vector<Integer>();
+		vec.add(1);vec.add(2);vec.add(1);vec.add(0);
 		
 		parallaxes = new Vector<Parallax>();
 		parallaxes.add(new Parallax("assets/background.png", -2, 0));
@@ -38,26 +42,26 @@ public class GliderGame
 		parallaxes.add(new Parallax("assets/foreground.png", -6, 0));
 		
 		obstacles = new Vector<Obstacle>();
-		obstacles.add(new Obstacle());
+		obstacles.add(Obstacle.GenerateObstacle());
 		
 		ActionListener actionlistener = new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				obstacles.add(new Obstacle());
+				obstacles.add(Obstacle.GenerateObstacle());
 			}
 		};
 		
-		obstacleTimer = new Timer(1000, actionlistener);
+		obstacleTimer = new Timer(800, actionlistener);
 		obstacleTimer.start();
 		
 		glider = new Glider();
 		
 		border_offset = Global.ScaleValue(32);
 		
-		sky = new Rectangle(0, 0, Global.ScaleValue(Global.SCREEN_WIDTH), border_offset);
-		sea = new Rectangle(0, Global.ScaleValue(Global.SCREEN_HEIGHT) - border_offset, Global.ScaleValue(Global.SCREEN_WIDTH), border_offset);
+		ceiling = new Rectangle(0, 0, Global.ScreenWidth(), 1);
+		floor = new Rectangle(0, Global.ScreenHeight() - border_offset, Global.ScreenWidth(), border_offset);
 	}
 	
 	public void update()
@@ -69,9 +73,10 @@ public class GliderGame
 				parallax.stop();
 			}
 			
-			for (Obstacle obstacle : obstacles)
+			for (int i=0; i<obstacles.size(); i++)
 			{
-				obstacle.stop();
+				obstacles.get(i).stop();
+				obstacles.get(i).animation.stop();
 			}
 		}
 		
@@ -83,28 +88,25 @@ public class GliderGame
 			parallax.update();
 		}
 		
-		for (int k=0; k<obstacles.size(); k++)
+		for (int i=0; i<obstacles.size(); i++)
 		{
-			Obstacle obstacle = obstacles.get(k);
-			
-			if (!obstacle.alive)
+			if (!obstacles.get(i).alive)
 			{
-				obstacles.remove(k);
-				k--;
+				obstacles.remove(i);
+				i--;
 				continue;
 			}
 			
-			obstacle.update();
-			
-			if (glider.collision.hit(obstacle))
-			{
-				glider.alive = false;
-			}
+			obstacles.get(i).update(glider);
 		}
 		
-		if (glider.collision.hit(sea) || glider.collision.hit(sky))
+		if (glider.collision.hit(ceiling))
 		{
-			glider.alive = false;
+			glider.motion.pos.y = 0;
+		}
+		if (glider.collision.hit(floor))
+		{
+			glider.motion.pos.y = floor.y - glider.height;
 		}
 	}
 	
@@ -115,20 +117,16 @@ public class GliderGame
 			parallax.paint(g);
 		}
 		
-		for (Obstacle obstacle : obstacles)
+		for (int i=0; i<obstacles.size(); i++)
 		{
-			obstacle.paint(g);
-		} 
-		
-		/*
-		g.setColor(Color.blue);
-		g.fillRect(sky.x, sky.y, sky.width, sky.height);
-		g.fillRect(sea.x, sea.y, sea.width, sea.height);
-		*/
+			obstacles.get(i).paint(g);
+		}
+	
 		glider.paint(g);
 		
 		if (!glider.alive)
 		{
+			g.setColor(Color.green);
 			g.setFont(new Font("Arial", Font.BOLD, 50));
 			g.drawString("YOU LOSE!", Global.ScaleValue(200), Global.ScaleValue(200));
 		}

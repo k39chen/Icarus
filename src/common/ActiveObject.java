@@ -36,6 +36,11 @@ public class ActiveObject
 		collision = new Collision(this);
 	}
 	
+	public void kill()
+	{
+		alive = false;
+	}
+	
 	public void update()
 	{	
 		motion.move();

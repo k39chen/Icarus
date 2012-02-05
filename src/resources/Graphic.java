@@ -11,6 +11,11 @@ import javax.imageio.ImageIO;
 
 public class Graphic extends Resource
 {	
+	public Graphic(BufferedImage data)
+	{
+		super(data);
+	}
+	
 	public Graphic(String url)
 	{
 		super(url);
@@ -23,6 +28,7 @@ public class Graphic extends Resource
 		try 
 		{
 			URL url = new URL(Global.CODE_BASE, r_url);
+			
 			r_data = ImageIO.read(url);
 		}
 		catch (IOException e) 
@@ -49,8 +55,6 @@ public class Graphic extends Resource
 	public void paint(Graphics g, int x, int y, int width, int height)
 	{
 		g.drawImage((BufferedImage)r_data, x, y, getWidth(), getHeight(), null);
-		
-		
 		paint(g, x, y, width * Global.SCALE, height * Global.SCALE);
 	}
 	
