@@ -2,7 +2,7 @@ Hello all!
 
 Welcome to the Icarus repository :).
 
-Icarus is a helicopter-type game where you avoid flying too high into the sky or falling into the sea.
+Icarus is an auto-scrolling runner where you avoid fun flying obstacles and go for the high score!sea.
 
 To quickly try out this game, just download the 'latest/' directory and start up the 'demo.html'.
 
