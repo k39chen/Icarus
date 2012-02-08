@@ -2,6 +2,7 @@ import gliderGame.GliderGame;
 import global.Global;
 
 import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -10,10 +11,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseListener;
 
+import resources.FontMgr;
+import resources.GraphicMgr;
+
 public class Game 
 	extends Applet 
 	implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {	
+	/**
+	 * To silence the compiler
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	// double-buffering
 	private Image dbImage;
 	private Graphics dbGraphics;
@@ -21,16 +30,36 @@ public class Game
 	// application classes
 	GliderGame gliderGame;
 	
+	public AudioClip sfx;
+	public AudioClip song;
+	
+	/*
+	 * TODO
+	 * - Powerups (like slime volleyball Science news for kids kind of depletion mechanic)
+	 */
+	
 	@Override
 	public void init() 
 	{
+		Global.GameApplet = this;
+		
 		setSize(Global.ScaleValue(Global.SCREEN_WIDTH), Global.ScaleValue(Global.SCREEN_HEIGHT));
 		
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
-		Global.CODE_BASE = getDocumentBase();
+		Global.CODE_BASE = getCodeBase();
+		
+		// instantiate managers
+		new GraphicMgr();
+		new FontMgr();
+		
+		//sfx = getAudioClip(this.getCodeBase(), "assets/sfx/sample.wav");
+		//sfx.loop();
+		
+		//song = getAudioClip(this.getCodeBase(), "assets/mus/giveitup.mid");
+		//song.loop();
 	}
 	
 	@Override
@@ -111,8 +140,16 @@ public class Game
 		case KeyEvent.VK_RIGHT:
 			break;
 		case KeyEvent.VK_UP:
+			Global.gliderGame.setSpeedBoostLevel(
+					(Global.gliderGame.STAGE_SPEED_BOOST_LEVEL == GliderGame.STAGE_SPEED_BOOST_LEVELS.length - 1)
+						? Global.gliderGame.STAGE_SPEED_BOOST_LEVEL
+						: Global.gliderGame.STAGE_SPEED_BOOST_LEVEL + 1); 
 			break;
 		case KeyEvent.VK_DOWN:
+			Global.gliderGame.setSpeedBoostLevel(
+				(Global.gliderGame.STAGE_SPEED_BOOST_LEVEL == 0)
+					? Global.gliderGame.STAGE_SPEED_BOOST_LEVEL
+					: Global.gliderGame.STAGE_SPEED_BOOST_LEVEL - 1); 
 			break;
 		case KeyEvent.VK_SPACE:
 			gliderGame = new GliderGame();

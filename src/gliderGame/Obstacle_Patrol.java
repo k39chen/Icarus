@@ -28,16 +28,17 @@ public class Obstacle_Patrol extends Obstacle
 		Vector<Integer> vec = new Vector<Integer>();
 		vec.add(0);
 		
-		animation = new Animation(new Spritesheet("assets/obstacle_patrol.png", 1, 1), vec, 150);
+		animation = new Animation(new Spritesheet("obstacle_patrol.png", 1, 1), vec, 150);
 		animation.play();
 		
-		width = animation.spritesheet.subWidth;
-		height = animation.spritesheet.subHeight;
+		width = Global.ScaleValue(animation.spritesheet.subWidth);
+		height = Global.ScaleValue(animation.spritesheet.subHeight);
 		
-		border_offset = Global.ScaleValue(32);
-	
-		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - border_offset - height)));
-		motion.setVelocity(Global.ScaleValue(-7), ((random.nextInt(2) == 0)? -1 : 1) * oscillationPeak);
+		speedX = Global.ScaleValue(-7);
+		speedY = ((random.nextInt(2) == 0)? -1 : 1) * oscillationPeak;
+		
+		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - GliderGame.FloorOffset() - height)));
+		motion.setVelocity(speedX, speedY);
 		motion.setAcceleration(0, energyLoss);
 		motion.setFriction(1, 1);
 		
@@ -49,16 +50,11 @@ public class Obstacle_Patrol extends Obstacle
 	@Override
 	public void update(Glider glider)
 	{	
-		if (glider.collision.hit(this))
+		if (glider.alive)
 		{
-			glider.kill();
-			return;
-		}
-		
-		if (motion.hitLowerBoundaryX(0))
-		{
-			kill();
-			stop();
+			motion.acc.y = (motion.acc.y > 0)
+				? energyLoss * Global.gliderGame.STAGE_SPEED_BOOST
+				: -energyLoss * Global.gliderGame.STAGE_SPEED_BOOST;
 		}
 		
 		if (Math.abs(motion.vel.y) > oscillationPeak)
@@ -66,6 +62,6 @@ public class Obstacle_Patrol extends Obstacle
 			motion.acc.y *= -1;
 		}
 		
-		motion.move(true);
+		super.update(glider, true);
 	}
 }

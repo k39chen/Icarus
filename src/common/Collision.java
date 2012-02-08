@@ -25,7 +25,7 @@ public class Collision
 	
 	public void SetPoint(Point pt)
 	{
-		if (!collisionShapeSet)
+		if (point != null || !collisionShapeSet)
 		{
 			point = pt;
 			collisionShapeSet = true;
@@ -34,7 +34,7 @@ public class Collision
 	
 	public void SetRectangle(Rectangle rect)
 	{
-		if (!collisionShapeSet)
+		if (rectangle != null || !collisionShapeSet)
 		{
 			rectangle = rect;
 			collisionShapeSet = true;
@@ -43,7 +43,7 @@ public class Collision
 	
 	public void SetCircle(Circle circ)
 	{
-		if (!collisionShapeSet)
+		if (circle != null || !collisionShapeSet)
 		{
 			circle = circ;
 			collisionShapeSet = true;

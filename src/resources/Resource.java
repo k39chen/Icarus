@@ -26,14 +26,4 @@ public class Resource
 	{
 		return r_data;
 	}
-	
-	public void setName(String name) 
-	{
-		this.r_name = name;
-	}
-	
-	public void setData(Object data) 
-	{
-		this.r_data = data;
-	}
 }

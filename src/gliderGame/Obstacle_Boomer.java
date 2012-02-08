@@ -26,16 +26,16 @@ public class Obstacle_Boomer extends Obstacle
 		Vector<Integer> vec = new Vector<Integer>();
 		vec.add(0);
 		
-		animation = new Animation(new Spritesheet("assets/obstacle_boomer.png", 1, 1), vec, 150);
+		animation = new Animation(new Spritesheet("obstacle_boomer.png", 1, 1), vec, 150);
 		animation.play();
 		
-		width = animation.spritesheet.subWidth;
-		height = animation.spritesheet.subHeight;
+		width = Global.ScaleValue(animation.spritesheet.subWidth);
+		height = Global.ScaleValue(animation.spritesheet.subHeight);
 		
-		border_offset = Global.ScaleValue(32);
-	
-		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - border_offset - height)));
-		motion.setVelocity(Global.ScaleValue(-5), 0);
+		speedX = Global.ScaleValue(-5);
+		
+		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - GliderGame.FloorOffset() - height)));
+		motion.setVelocity(speedX, 0);
 		motion.setAcceleration(0, 0);
 		motion.setFriction(1, 1);
 		
@@ -54,29 +54,22 @@ public class Obstacle_Boomer extends Obstacle
 				expanded = true;
 				
 				Vector<Integer> vec = new Vector<Integer>();
-				vec.add(0);
+				vec.add(0);vec.add(1);vec.add(2);
 				
-				animation = new Animation(new Spritesheet("assets/obstacle_boomer_2.png", 1, 1), vec, 100);
-				animation.play();
+				animation = new Animation(new Spritesheet("obstacle_boomer_2.png", 3, 1), vec, 100);
 				
-				width *= 2.5;
-				height *= 2.5;
-				collision.circle.radius *= 2.5;
-				collision.circle.width *= 2.5;
-				collision.circle.height *= 2.5;
+				width = Global.ScaleValue(animation.spritesheet.subWidth);
+				height = Global.ScaleValue(animation.spritesheet.subHeight);
+				
+				collision.SetCircle(new Circle(0, 0, width/2));
 				
 				motion.pos.y -= collision.circle.radius/2;
+				
+				animation.play();
 			}
 		}
 		
-		if (motion.hitLowerBoundaryX(-collision.circle.radius))
-		{
-			alive = false;
-			stop();
-		}
-		motion.move();
-		
-		super.update(glider);
+		super.update(glider, -collision.circle.radius * 2);
 	}
 	
 	@Override

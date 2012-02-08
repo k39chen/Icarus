@@ -19,16 +19,16 @@ public class Obstacle_Normal extends Obstacle
 		Vector<Integer> vec = new Vector<Integer>();
 		vec.add(0);vec.add(1);
 		
-		animation = new Animation(new Spritesheet("assets/obstacle_normal.png", 2, 1), vec, 150);
+		animation = new Animation(new Spritesheet("obstacle_normal.png", 2, 1), vec, 150);
 		animation.play();
 		
-		width = animation.spritesheet.subWidth;
-		height = animation.spritesheet.subHeight;
-		
-		border_offset = Global.ScaleValue(32);
+		width = Global.ScaleValue(animation.spritesheet.subWidth);
+		height = Global.ScaleValue(animation.spritesheet.subHeight);
 	
-		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - border_offset - height)));
-		motion.setVelocity(Global.ScaleValue(-10), 0);
+		speedX = Global.ScaleValue(-10);
+		
+		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - GliderGame.FloorOffset() - height)));
+		motion.setVelocity(speedX, 0);
 		motion.setAcceleration(0, 0);
 		motion.setFriction(1, 1);
 		

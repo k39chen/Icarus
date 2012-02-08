@@ -2,8 +2,11 @@ package resources;
 
 import global.Global;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.IOException;
 import java.net.URL;
 
@@ -19,11 +22,9 @@ public class Graphic extends Resource
 	public Graphic(String url)
 	{
 		super(url);
-		
-		loadData();
 	}
 	
-	protected void loadData()
+	protected boolean loadData()
 	{	
 		try 
 		{
@@ -34,17 +35,22 @@ public class Graphic extends Resource
 		catch (IOException e) 
 		{
 			e.printStackTrace();
+			System.err.println(r_url + " not loaded.");
+			
+			return false;
 		}
+		
+		return true;
 	}
 	
 	public int getHeight()
 	{
-		return (int)(((BufferedImage)(r_data)).getHeight() * Global.SCALE);
+		return (int)(Global.ScaleValue(((BufferedImage)(r_data)).getHeight()));
 	}
 	
 	public int getWidth()
 	{
-		return (int)(((BufferedImage)(r_data)).getWidth() * Global.SCALE);
+		return (int)(Global.ScaleValue(((BufferedImage)(r_data)).getWidth()));
 	}
 	
 	public void paint(Graphics g, int x, int y)
@@ -54,13 +60,29 @@ public class Graphic extends Resource
 	
 	public void paint(Graphics g, int x, int y, int width, int height)
 	{
-		g.drawImage((BufferedImage)r_data, x, y, getWidth(), getHeight(), null);
-		paint(g, x, y, width * Global.SCALE, height * Global.SCALE);
+		g.drawImage((BufferedImage)r_data, x, y, Global.ScaleValue(width), Global.ScaleValue(height), null);
+		//paint(g, x, y, Global.ScaleValue(width), Global.ScaleValue(height));
 	}
 	
 	public void paint(Graphics g, int x, int y, double scaleX, double scaleY)
 	{
 		g.drawImage((BufferedImage)r_data, x, y, (int)(getWidth() * scaleX), (int)(getHeight() * scaleY), null);
+	}
+	
+	public void paint(Graphics g, int x, int y, Color color)
+	{	
+		float scales[] = 
+		{
+			(float)((float)color.getRed() / (float)255),
+			(float)((float)color.getGreen() / (float)255),
+			(float)((float)color.getBlue() / (float)255),
+			(float)((float)color.getAlpha() / (float)255)
+		};
+		
+		float offsets[] = new float[4];
+		RescaleOp rop = new RescaleOp(scales, offsets, null);
+		
+		((Graphics2D)g).drawImage((BufferedImage)r_data, rop, x, y);
 	}
 	
 	public BufferedImage getData() 

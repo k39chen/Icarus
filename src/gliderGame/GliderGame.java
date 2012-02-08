@@ -2,8 +2,7 @@ package gliderGame;
 
 import global.Global;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.applet.AudioClip;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -14,9 +13,28 @@ import javax.swing.Timer;
 
 public class GliderGame 
 {
+	public AudioClip song;
+	
+	public static int OBSTACLE_SPAWN_DELAY 			= 800;
+	public static int OBSTACLE_CEILING_SPAWN_DELAY 	= 5200;
+	public static int OBSTACLE_FLOOR_SPAWN_DELAY 	= 4000;
+	
+	public static int OBSTACLE_SPAWN_DELAY_DEVIATION 		= 500;
+	public static int OBSTACLE_CEILING_SPAWN_DELAY_DEVIATION = 1000;
+	public static int OBSTACLE_FLOOR_SPAWN_DELAY_DEVIATION 	= 1200;
+	
+	public static final int FLOOR_OFFSET = 32;
+	
+	public double STAGE_SPEED = 1.01;
+	public static final double STAGE_SPEED_BOOST_LEVELS[] = {1.0, 1.5, 2.0, 3.0, 5.0};
+	public int STAGE_SPEED_BOOST_LEVEL = 0;
+	public double STAGE_SPEED_BOOST = STAGE_SPEED_BOOST_LEVELS[STAGE_SPEED_BOOST_LEVEL];
+	
+	
 	public Hud hud;
 	
-	public Vector<Parallax> parallaxes;
+	public Vector<Parallax> bgParallaxes;
+	public Vector<Parallax> fgParallaxes;
 	
 	public Vector<Obstacle> obstacles;
 	
@@ -26,51 +44,85 @@ public class GliderGame
 	public Rectangle ceiling;
 	
 	public Timer obstacleTimer;
-	
-	public int border_offset;
+	public Timer obstacleCeilingTimer;
+	public Timer obstacleFloorTimer;
 	
 	public GliderGame()
 	{	
-		hud = new Hud(this);
+		Global.gliderGame = this;
+		
+		hud = new Hud();
 		
 		Vector<Integer> vec = new Vector<Integer>();
 		vec.add(1);vec.add(2);vec.add(1);vec.add(0);
 		
-		parallaxes = new Vector<Parallax>();
-		parallaxes.add(new Parallax("assets/background.png", -2, 0));
-		parallaxes.add(new Parallax("assets/midground.png", -4, 0));
-		parallaxes.add(new Parallax("assets/foreground.png", -6, 0));
+		bgParallaxes = new Vector<Parallax>();
+		
+		/*****/
+		bgParallaxes.add(new Parallax("parallax_1.png", -2, 0));
+		bgParallaxes.add(new Parallax("parallax_2.png", -4, 0));
+		bgParallaxes.add(new Parallax("parallax_3.png", -6, 0));
+		/*****
+		bgParallaxes.add(new Parallax("parallax_bg_1.png", -2, 0));
+		bgParallaxes.add(new Parallax("parallax_bg_2.png", -4, 0));
+		bgParallaxes.add(new Parallax("parallax_bg_3.png", -6, 0));
+		/*****/
+		
+		fgParallaxes = new Vector<Parallax>();
+		//fgParallaxes.add(new Parallax("parallax_fg_1.png", -2, 0));
+		//fgParallaxes.add(new Parallax("parallax_fg_2.png", 0, 0));
+		//fgParallaxes.add(new Parallax("parallax_fg_3.png", -6, 0));
 		
 		obstacles = new Vector<Obstacle>();
-		obstacles.add(Obstacle.GenerateObstacle());
 		
-		ActionListener actionlistener = new ActionListener() 
+		obstacleTimer = new Timer((int)(Math.random() * OBSTACLE_SPAWN_DELAY), new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
 				obstacles.add(Obstacle.GenerateObstacle());
 			}
-		};
+		});
 		
-		obstacleTimer = new Timer(800, actionlistener);
+		obstacleCeilingTimer = new Timer((int)(Math.random() * OBSTACLE_CEILING_SPAWN_DELAY), new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				obstacles.add(Obstacle.GenerateObstacleCeiling());
+			}
+		});
+		
+		obstacleFloorTimer = new Timer((int)(Math.random() * OBSTACLE_FLOOR_SPAWN_DELAY), new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				obstacles.add(Obstacle.GenerateObstacleFloor());
+			}
+		});
+		
 		obstacleTimer.start();
+		obstacleCeilingTimer.start();
+		obstacleFloorTimer.start();
 		
 		glider = new Glider();
 		
-		border_offset = Global.ScaleValue(32);
-		
 		ceiling = new Rectangle(0, 0, Global.ScreenWidth(), 1);
-		floor = new Rectangle(0, Global.ScreenHeight() - border_offset, Global.ScreenWidth(), border_offset);
+		floor = new Rectangle(0, Global.ScreenHeight() - FloorOffset(), Global.ScreenWidth(), FloorOffset());
 	}
 	
 	public void update()
 	{	
 		if (!glider.alive)
 		{
-			for (Parallax parallax : parallaxes)
+			for (Parallax bgParallax : bgParallaxes)
 			{
-				parallax.stop();
+				bgParallax.stop();
+			}
+			for (Parallax fgParallax : fgParallaxes)
+			{
+				fgParallax.stop();
 			}
 			
 			for (int i=0; i<obstacles.size(); i++)
@@ -83,9 +135,13 @@ public class GliderGame
 		glider.update();
 		hud.update();
 		
-		for (Parallax parallax : parallaxes)
+		for (Parallax bgParallax : bgParallaxes)
 		{
-			parallax.update();
+			bgParallax.update();
+		}
+		for (Parallax fgParallax : fgParallaxes)
+		{
+			fgParallax.update();
 		}
 		
 		for (int i=0; i<obstacles.size(); i++)
@@ -112,9 +168,9 @@ public class GliderGame
 	
 	public void paint(Graphics g)
 	{
-		for (Parallax parallax : parallaxes)
+		for (Parallax bgParallax : bgParallaxes)
 		{
-			parallax.paint(g);
+			bgParallax.paint(g);
 		}
 		
 		for (int i=0; i<obstacles.size(); i++)
@@ -124,13 +180,22 @@ public class GliderGame
 	
 		glider.paint(g);
 		
-		if (!glider.alive)
+		for (Parallax fgParallax : fgParallaxes)
 		{
-			g.setColor(Color.green);
-			g.setFont(new Font("Arial", Font.BOLD, 50));
-			g.drawString("YOU LOSE!", Global.ScaleValue(200), Global.ScaleValue(200));
+			fgParallax.paint(g);
 		}
 		
 		hud.paint(g);
+	}
+	
+	public static final int FloorOffset()
+	{
+		return Global.ScaleValue(FLOOR_OFFSET);
+	}
+	
+	public void setSpeedBoostLevel(int speed_level)
+	{
+		STAGE_SPEED_BOOST_LEVEL = speed_level;
+		STAGE_SPEED_BOOST = STAGE_SPEED_BOOST_LEVELS[STAGE_SPEED_BOOST_LEVEL];
 	}
 }

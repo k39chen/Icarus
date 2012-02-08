@@ -142,8 +142,6 @@ public class Motion
 		
 		vel.y += acc.y;
 		pos.y += vel.y;
-		
-		//System.out.printf("(%d,%f,%f)\n", pos.x, vel.x, acc.x);
 	}
 	
 	public void setPosition(int x, int y)

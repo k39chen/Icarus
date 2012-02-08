@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.util.Vector;
 
 import resources.Graphic;
-import resources.GraphicsCache;
+import resources.GraphicMgr;
 
 public class Spritesheet 
 {
@@ -19,11 +19,11 @@ public class Spritesheet
 	
 	public Vector<Graphic> spritesheet;
 	
-	public Spritesheet(String url, int rNumX, int rNumY)
+	public Spritesheet(String id, int rNumX, int rNumY)
 	{
 		spritesheet = new Vector<Graphic>();
 		
-		img = GraphicsCache.GetInstance().loadGraphic(url);
+		img = GraphicMgr.getGraphic(id);
 		numX = rNumX;
 		numY = rNumY;
 		

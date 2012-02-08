@@ -2,9 +2,15 @@ package gliderGame;
 
 import global.Global;
 
+import java.applet.AudioClip;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
+
+import javax.swing.Timer;
 
 import common.ActiveObject;
 import common.Animation;
@@ -13,22 +19,34 @@ import common.Spritesheet;
 
 public class Glider extends ActiveObject
 {
+	private static int DAMAGE_TIMER_DURATION = 1000;
+	
 	public double distance;
-	public double speed;
+	
+	public int lives = 3;
 	
 	private Animation animation;
+	
+	private Timer damageTimer;
+	public boolean canDamage;
+	
+	private AudioClip ac_damage;
 	
 	public Glider()
 	{
 		super();
 		
+		ac_damage = Global.GameApplet.getAudioClip(Global.CODE_BASE, "assets/sfx/sample.wav");
+		ac_damage.stop();
+		
+		canDamage = true;
+		
 		distance = 0;
-		speed = 1.01;
 		
 		Vector<Integer> vec = new Vector<Integer>();
-		vec.add(0);vec.add(1);vec.add(2);
+		vec.add(0);vec.add(1);
 		
-		animation = new Animation(new Spritesheet("assets/quicksprite.png", 3, 1), vec, 150);
+		animation = new Animation(new Spritesheet("player.png", 2, 1), vec, 200);
 		animation.play();
 		
 		width = animation.spritesheet.spritesheet.get(0).getWidth();
@@ -42,13 +60,40 @@ public class Glider extends ActiveObject
 		motion.setBoundary(new Rectangle(0, 0, Global.ScreenWidth(), Global.ScreenHeight()));
 		
 		collision.SetCircle(new Circle(0, 0, width/2));
+		
+		damageTimer = new Timer(DAMAGE_TIMER_DURATION, new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canDamage = true;
+				damageTimer.stop();
+			}
+		});
+	}
+	
+	public void damage()
+	{
+		lives--;
+		
+		if (lives <= 0)
+		{
+			kill();
+			return;
+		}
+		
+		//ac_damage.stop();
+		//ac_damage.play();
+		
+		canDamage = false;
+		
+		damageTimer.start();
 	}
 	
 	public void update()
 	{	
 		if (alive)
 		{	
-			distance += speed;
+			distance += (Global.gliderGame.STAGE_SPEED * Global.gliderGame.STAGE_SPEED_BOOST);
 			super.update();
 		}
 		else
@@ -72,6 +117,10 @@ public class Glider extends ActiveObject
 	{	
 		animation.getFrame().paint(g, motion.pos.x, motion.pos.y);
 		
+		if (!canDamage)
+		{
+			animation.getFrame().paint(g, motion.pos.x, motion.pos.y, new Color(0,0,0,100));
+		}
 		super.paint(g);
 	}
 }

@@ -41,6 +41,11 @@ public class ActiveObject
 		alive = false;
 	}
 	
+	public void update(boolean elastic)
+	{
+		motion.move(elastic);
+	}
+	
 	public void update()
 	{	
 		motion.move();

@@ -27,22 +27,22 @@ public class Obstacle_Charger extends Obstacle
 		Vector<Integer> vec1 = new Vector<Integer>();
 		vec1.add(0);
 		
-		animation = new Animation(new Spritesheet("assets/obstacle_charger.png", 1, 1), vec1, 150);
+		animation = new Animation(new Spritesheet("obstacle_charger.png", 1, 1), vec1, 150);
 		animation.play();
 		
 		Vector<Integer> vec2 = new Vector<Integer>();
 		vec2.add(0);
 		
-		exclamationAnimation = new Animation(new Spritesheet("assets/exclamation.png", 1, 1), vec2, 150);
+		exclamationAnimation = new Animation(new Spritesheet("exclamation.png", 1, 1), vec2, 150);
 		exclamationAnimation.play();
 		
-		width = animation.spritesheet.subWidth;
-		height = animation.spritesheet.subHeight;
+		width = Global.ScaleValue(animation.spritesheet.subWidth);
+		height = Global.ScaleValue(animation.spritesheet.subHeight);
 		
-		border_offset = Global.ScaleValue(32);
-	
-		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - border_offset - height)));
-		motion.setVelocity(Global.ScaleValue(-10), 0);
+		speedX = Global.ScaleValue(-10);
+		
+		motion.setPosition(Global.ScreenWidth(), (int)(Math.random() * (Global.ScreenHeight() - GliderGame.FloorOffset() - height)));
+		motion.setVelocity(speedX, 0);
 		motion.setAcceleration(0, 0);
 		motion.setFriction(1, 1);
 		
@@ -54,13 +54,15 @@ public class Obstacle_Charger extends Obstacle
 	@Override
 	public void update(Glider glider)
 	{	
-		if (motion.pos.y >= glider.motion.pos.y &&
-			motion.pos.y <= glider.motion.pos.y + glider.height)
+		if ((glider.motion.pos.x < motion.pos.x) &&
+			(motion.pos.x <= Global.ScaleValue(Global.ScreenWidth() - 150)) &&
+			(glider.motion.pos.y >= motion.pos.y && glider.motion.pos.y <= motion.pos.y + height) ||
+			(glider.motion.pos.y + glider.height >= motion.pos.y && glider.motion.pos.y + height <= motion.pos.y + height))
 		{
 			if (!alerted)
 			{
 				alerted = true;
-				motion.vel.x = Global.ScaleValueD(-15);
+				speedX = Global.ScaleValueD(-15);
 			}
 		}
 		super.update(glider);
